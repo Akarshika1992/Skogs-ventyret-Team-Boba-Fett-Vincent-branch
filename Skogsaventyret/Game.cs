@@ -11,7 +11,7 @@ namespace Skogsaventyret
         {
             "Du strosar runt i Majorna",
             "Du tar en promenad i Tingstadsvass",
-             "Du beundrar landskapet i Slottsskogen",
+            "Du beundrar landskapet i Partille",
             "Du promenerar på Linnégatan",
             "Du vandrar genom Nordstan",
             "Du promenerar genom Biskopsgården"
@@ -24,3 +24,28 @@ namespace Skogsaventyret
         private Spelare spelare;
         private bool spelPågår; // Håller koll på om spelet fortfarande pågår.
         private int dag;        // Vilken dag i spelet vi är på.
+
+        // Sätter upp startläget innan spelet börjar.
+        public Game()
+        {
+            dag = 1;
+            spelPågår = true;
+        }
+
+        // Startar spelet. Frågar efter spelarens namn och kör sedan
+        // spelloopen (en dag i taget) tills spelPågår blir false.
+        public void Starta()
+        {
+            Console.WriteLine("Hallå eller! Välkommen till GBG.");
+            Console.Write("Vad heter du?:");
+            string namn = Console.ReadLine();
+
+            spelare = new Spelare(namn);
+
+            while (spelPågår)
+            {
+                Promenad();
+            }
+
+            Console.WriteLine("Game Over gubben. Bättre lycka nästa gång.");
+        }
