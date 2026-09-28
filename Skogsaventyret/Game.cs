@@ -49,3 +49,50 @@ namespace Skogsaventyret
 
             Console.WriteLine("Game Over gubben. Bättre lycka nästa gång.");
         }
+
+        // Kör en dag i spelet och visar status. låter spelaren välja mellan att vila eller äventyra, och kollar om spelaren dog.
+        private void Promenad()
+        {
+            Console.WriteLine($"\n--- Dag {dag} ---");
+            Console.WriteLine($"{spelare.Namn} | HP: {spelare.Hp}/{spelare.MaxHp} | Level: {spelare.Level} | XP: {spelare.Xp}");
+            Console.WriteLine("Vad vill du göra?");
+            Console.WriteLine("1) Ta en Öl i Kvillebäcken");
+            Console.WriteLine("2) Strosa på stan (äventyra)");
+
+            string val = Console.ReadLine();
+
+            // Beroende på vad spelaren skrev in körs olika saker.
+            switch (val)
+            {
+                case "1":
+                    Vila();
+                    break;
+                case "2":
+                    Äventyra();
+                    break;
+                default:
+                    // Om spelaren skrev något annat än 1 eller 2, be dem försöka igen.
+                    Console.WriteLine("Vafan sägeru? Försök igen.");
+                    return;
+            }
+
+            dag++; // Nästa dag har kommit.
+            spelare.ÖverlevDag(); // Spelaren har överlevt ännu en dag.
+
+            // Om spelaren är helt slut (0 HP eller mindre) är spelet över.
+            if (spelare.Hp <= 0)
+            {
+                Console.WriteLine($"{spelare.Namn} klarade inte av trycket... Game over gubben.");
+                spelPågår = false;
+            }
+        }
+
+        private void Vila()
+        {
+
+        }
+
+        private void Äventyra()
+        {
+
+        }
