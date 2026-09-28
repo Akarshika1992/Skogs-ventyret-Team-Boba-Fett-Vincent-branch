@@ -1,0 +1,13 @@
+# C# / .NET
+bin/
+obj/
+*.user
+.vs/
+
+# Hemligheter
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
