@@ -87,12 +87,33 @@ namespace Skogsaventyret
             }
         }
 
+        // Spelaren vilar och återhämtar halva sin HP
         private void Vila()
         {
-
+            Console.WriteLine($"{spelare.Namn} sover ut hemma i Vassen och känner sig pigg.");
+            spelare.Hela(spelare.MaxHp / 2);
         }
 
+        // Spelaren ger sig ut på äventyr på en slumpad plats. ett slumpat monster dyker upp och de slåss mot varandra.
+        // Om spelaren vinner får de erfarenhetspoäng (XP)
         private void Äventyra()
         {
+            //vi slumpmässar fram en plats
+            string plats = Platser[slumpgenerator.Next(Platser.Length)];
+            Console.WriteLine($"{plats}...");
 
+            // vi skapar ett slumpat monster att slåss mot
+            Monster monster = Monsterfabrik.SkapaSlumpatMonster();
+            Console.WriteLine($"En {monster.Namn} dyker upp! {monster.Beskrivning}");
+
+            // starta striden och se om spelaren vinner eller förlorar
+            Strid strid = new Strid(spelare, monster);
+            bool spelarenVann = strid.Kör();
+
+            if (spelarenVann)
+            {
+                Console.WriteLine($"{spelare.Namn} vann och fick {monster.XpBelöning} XP!");
+                spelare.FåXp(monster.XpBelöning);
+            }
         }
+
