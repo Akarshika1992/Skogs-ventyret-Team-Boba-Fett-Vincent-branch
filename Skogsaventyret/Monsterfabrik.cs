@@ -1,50 +1,38 @@
 using System;
+using System.Collections.Generic;
 
 namespace Skogsaventyret
 {
     public static class Monsterfabrik
     {
-        // Slumpgenerator
         private static Random slumpgenerator = new Random();
 
-        // Skapar ett slumpmässigt monster
+        // Lista med alla typer av monster.
+        private static List<Monster> monsterLista = new List<Monster>
+        {
+            new Fyllegubbe(),
+            new Poseidon(),
+            new NordstansMichaelJackson()
+        };
+
+        // Skapar ett slumpmässigt monster.
         public static Monster SkapaSlumpatMonster()
         {
-            // Olika monster som kan dyka upp
-            Monster[] monster =
+            int index = slumpgenerator.Next(monsterLista.Count);
+
+            Monster monster = monsterLista[index];
+
+            if (monster is Fyllegubbe)
             {
-                new Monster(
-                    "Fyllegubbe",
-                    50,
-                    10,
-                    3,
-                    20,
-                    "En full gubbe vinglar fram mot dig."
-                ),
+                return new Fyllegubbe();
+            }
 
-                new Monster(
-                    "Poseidon",
-                    100,
-                    20,
-                    8,
-                    50,
-                    "Poseidon dyker upp och är inte särskilt nöjd."
-                ),
+            if (monster is Poseidon)
+            {
+                return new Poseidon();
+            }
 
-                new Monster(
-                    "Nordstans Michael Jackson",
-                    75,
-                    15,
-                    5,
-                    35,
-                    "En mystisk Michael Jackson dyker upp från Nordstan."
-                )
-            };
-
-            // Slumpa ett monster från listan
-            int index = slumpgenerator.Next(monster.Length);
-
-            return monster[index];
+            return new NordstansMichaelJackson();
         }
     }
 }
