@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Skogsaventyret
 {
 
@@ -23,7 +24,7 @@ namespace Skogsaventyret
         //fältdeklarationer
         private Spelare spelare;
         private bool spelPågår; // Håller koll på om spelet fortfarande pågår.
-        private int dag;        // Vilken dag i spelet vi är på.
+        private int dag; // Vilken dag i spelet vi är på.
 
         // Sätter upp startläget innan spelet börjar.
         public Game()
@@ -54,7 +55,8 @@ namespace Skogsaventyret
         private void Promenad()
         {
             Console.WriteLine($"\n--- Dag {dag} ---");
-            Console.WriteLine($"{spelare.Namn} | HP: {spelare.Hp}/{spelare.MaxHp} | Level: {spelare.Level} | XP: {spelare.Xp}");
+            Console.WriteLine(
+                $"{spelare.Namn} | HP: {spelare.Hp}/{spelare.MaxHp} | Level: {spelare.Level} | XP: {spelare.Xp}");
             Console.WriteLine("Vad vill du göra?");
             Console.WriteLine("1) Ta en Öl i Kvillebäcken");
             Console.WriteLine("2) Strosa på stan (äventyra)");
@@ -116,4 +118,6 @@ namespace Skogsaventyret
                 spelare.FåXp(monster.XpBelöning);
             }
         }
+    }
+}
 
