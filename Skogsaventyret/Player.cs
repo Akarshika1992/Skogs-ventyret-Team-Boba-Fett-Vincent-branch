@@ -1,62 +1,101 @@
-﻿
-using System;
+﻿using System;
 
 namespace Skogsaventyret
 {
-    // Klass som beskriver spelaren
+    // Klass som beskriver spelaren.
     public class Spelare
     {
-        // Spelarens namn
         public string Namn { get; private set; }
-
-        // Spelarens HP
         public int Hp { get; set; }
-
-        // Spelarens maximala HP
         public int MaxHp { get; private set; }
-
-        // Spelarens attack
         public int Attack { get; private set; }
-
-        // Spelarens level
+        public int Forsvar { get; private set; }
         public int Level { get; private set; }
-
-        // Spelarens XP
         public int Xp { get; private set; }
+        public int DagarÖverlevda { get; private set; }
 
-        // Skapar en ny spelare
+        // Skapar en ny spelare.
         public Spelare(string namn)
         {
             Namn = namn;
             MaxHp = 100;
             Hp = MaxHp;
             Attack = 20;
+            Forsvar = 5;
             Level = 1;
             Xp = 0;
+            DagarÖverlevda = 0;
         }
 
-        // Spelaren får XP
-        public void FåXp(int xp)
+        // Tar skada och returnerar true om spelaren dör.
+        public bool TakeDamage(int skada)
         {
-            Xp += xp;
+            Hp -= skada;
+
+            if (Hp <= 0)
+            {
+                Hp = 0;
+                return true;
+            }
+
+            return false;
         }
 
-        // Spelaren återfår HP
+        // Återställer HP till max.
+        public void Heal()
+        {
+            Hp = MaxHp;
+        }
+
+        // Den gamla metoden behålls.
         public void Hela(int mängd)
         {
             Hp += mängd;
 
-            // HP får inte bli högre än MaxHp
             if (Hp > MaxHp)
             {
                 Hp = MaxHp;
             }
         }
 
-        // Körs när spelaren överlever en dag
+        // Ger spelaren XP.
+        public void GainXP(int mängd)
+        {
+            Xp += mängd;
+
+            if (Xp >= Level * 100)
+            {
+                LevelUp();
+            }
+        }
+
+        // Den gamla metoden behålls.
+        public void FåXp(int xp)
+        {
+            GainXP(xp);
+        }
+
+        // Höjer spelarens level.
+        public void LevelUp()
+        {
+            Level++;
+            MaxHp += 20;
+            Attack += 5;
+            Hp = MaxHp;
+
+            Console.WriteLine(
+                $"{Namn} gick upp till level {Level}!"
+            );
+        }
+
+        // Körs när spelaren överlever en dag.
         public void ÖverlevDag()
         {
-            Console.WriteLine($"{Namn} överlevde dagen.");
+            DagarÖverlevda++;
+
+            Console.WriteLine(
+                $"{Namn} överlevde dagen."
+            );
         }
     }
 }

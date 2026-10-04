@@ -1,41 +1,32 @@
 namespace Skogsaventyret
 {
-    // Klass som hanterar information om monstret
+    // Basklass för alla monster.
     public class Monster
     {
-        // Monstrets namn
-        public string Namn { get; private set; }
+        public string Namn { get; protected set; } = "";
+        public int Hp { get; protected set; }
+        public int Attack { get; protected set; }
+        public int Forsvar { get; protected set; }
+        public int XpBelöning { get; protected set; }
+        public string Beskrivning { get; protected set; } = "";
 
-        // Monstrets HP
-        public int Hp { get; set; }
-
-        // Monstrets attack
-        public int Attack { get; private set; }
-
-        // Monstrets försvar
-        public int Forsvar { get; private set; }
-
-        // XP som spelaren får när monstret besegras
-        public int XpBelöning { get; private set; }
-
-        // Beskrivning av monstret
-        public string Beskrivning { get; private set; }
-
-        // Skapar ett nytt monster
-        public Monster(
-            string namn,
-            int hp,
-            int attack,
-            int forsvar,
-            int xpBelöning,
-            string beskrivning)
+        // Kollar om monstret lever.
+        public bool ÄrVidLiv
         {
-            Namn = namn;
-            Hp = hp;
-            Attack = attack;
-            Forsvar = forsvar;
-            XpBelöning = xpBelöning;
-            Beskrivning = beskrivning;
+            get { return Hp > 0; }
+        }
+
+        // Tar skada och returnerar true om monstret dör.
+        public virtual bool TaSkada(int skada)
+        {
+            Hp -= skada;
+
+            if (Hp < 0)
+            {
+                Hp = 0;
+            }
+
+            return Hp <= 0;
         }
     }
 }

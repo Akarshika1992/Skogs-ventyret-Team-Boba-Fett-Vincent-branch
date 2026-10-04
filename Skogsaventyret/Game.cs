@@ -1,9 +1,8 @@
 ﻿using System;
+
 namespace Skogsaventyret
 {
-
     // Public class Game som interagerar med resten av projektet.
-
     public class Game
     {
         // Lista med platser i Göteborg som ska slumpas fram varje gång spelaren är ute på äventyr.
@@ -17,13 +16,13 @@ namespace Skogsaventyret
             "Du promenerar genom Biskopsgården"
         };
 
-        //Slumpgenerator som används för att generera en slumpmässig plats och slumpmässiga "monster".
+        // Slumpgenerator.
         private Random slumpgenerator = new Random();
 
-        //fältdeklarationer
-        private Spelare spelare;
-        private bool spelPågår; // Håller koll på om spelet fortfarande pågår.
-        private int dag;        // Vilken dag i spelet vi är på.
+        // Fältdeklarationer.
+        private Spelare spelare = null!;
+        private bool spelPågår;
+        private int dag;
 
         // Sätter upp startläget innan spelet börjar.
         public Game()
@@ -32,13 +31,13 @@ namespace Skogsaventyret
             spelPågår = true;
         }
 
-        // Startar spelet. Frågar efter spelarens namn och kör sedan
-        // spelloopen (en dag i taget) tills spelPågår blir false.
+        // Startar spelet.
         public void Starta()
         {
             Console.WriteLine("Hallå eller! Välkommen till GBG.");
-            Console.Write("Vad heter du?:");
-            string namn = Console.ReadLine();
+            Console.Write("Vad heter du?: ");
+
+            string namn = Console.ReadLine() ?? "";
 
             spelare = new Spelare(namn);
 
@@ -47,73 +46,100 @@ namespace Skogsaventyret
                 Promenad();
             }
 
-            Console.WriteLine("Game Over gubben. Bättre lycka nästa gång.");
+            Console.WriteLine("\n--- GAME OVER ---");
+            Console.WriteLine($"Dagar överlevda: {spelare.DagarÖverlevda}");
+            Console.WriteLine($"Level: {spelare.Level}");
+            Console.WriteLine($"Total XP: {spelare.Xp}");
         }
 
-        // Kör en dag i spelet och visar status. låter spelaren välja mellan att vila eller äventyra, och kollar om spelaren dog.
+        // Kör en dag i spelet.
         private void Promenad()
         {
             Console.WriteLine($"\n--- Dag {dag} ---");
-            Console.WriteLine($"{spelare.Namn} | HP: {spelare.Hp}/{spelare.MaxHp} | Level: {spelare.Level} | XP: {spelare.Xp}");
+
+            Console.WriteLine(
+                $"{spelare.Namn} | HP: {spelare.Hp}/{spelare.MaxHp} | " +
+                $"Level: {spelare.Level} | XP: {spelare.Xp}"
+            );
+
             Console.WriteLine("Vad vill du göra?");
             Console.WriteLine("1) Ta en Öl i Kvillebäcken");
             Console.WriteLine("2) Strosa på stan (äventyra)");
 
-            string val = Console.ReadLine();
+            string val = Console.ReadLine() ?? "";
 
-            // Beroende på vad spelaren skrev in körs olika saker.
             switch (val)
             {
                 case "1":
                     Vila();
                     break;
+
                 case "2":
                     Äventyra();
                     break;
+
                 default:
-                    // Om spelaren skrev något annat än 1 eller 2, be dem försöka igen.
-                    Console.WriteLine("Vafan sägeru? Försök igen.");
+                    Console.WriteLine("Välj 1 eller 2.");
                     return;
             }
 
-            dag++; // Nästa dag har kommit.
-            spelare.ÖverlevDag(); // Spelaren har överlevt ännu en dag.
-
-            // Om spelaren är helt slut (0 HP eller mindre) är spelet över.
+            // Om spelaren dog under striden är spelet slut.
             if (spelare.Hp <= 0)
             {
-                Console.WriteLine($"{spelare.Namn} klarade inte av trycket... Game over gubben.");
+                Console.WriteLine(
+                    $"{spelare.Namn} klarade inte av trycket... Game over gubben."
+                );
+
                 spelPågår = false;
+                return;
             }
+
+            // Nästa dag.
+            dag++;
+
+            // Spelaren har överlevt dagen.
+            spelare.ÖverlevDag();
         }
 
-        // Spelaren vilar och återhämtar halva sin HP
+        // Spelaren vilar och återställer HP till max.
         private void Vila()
         {
-            Console.WriteLine($"{spelare.Namn} sover ut hemma i Vassen och känner sig pigg.");
-            spelare.Hela(spelare.MaxHp / 2);
+            Console.WriteLine(
+                $"{spelare.Namn} sover ut hemma i Vassen och känner sig pigg."
+            );
+
+            spelare.Heal();
         }
 
-        // Spelaren ger sig ut på äventyr på en slumpad plats. ett slumpat monster dyker upp och de slåss mot varandra.
-        // Om spelaren vinner får de erfarenhetspoäng (XP)
+        // Spelaren ger sig ut på äventyr.
         private void Äventyra()
         {
-            //vi slumpmässar fram en plats
+            // Slumpar fram en plats.
             string plats = Platser[slumpgenerator.Next(Platser.Length)];
+
             Console.WriteLine($"{plats}...");
 
-            // vi skapar ett slumpat monster att slåss mot
+            // Skapar ett slumpmässigt monster.
             Monster monster = Monsterfabrik.SkapaSlumpatMonster();
-            Console.WriteLine($"En {monster.Namn} dyker upp! {monster.Beskrivning}");
 
-            // starta striden och se om spelaren vinner eller förlorar
+            Console.WriteLine(
+                $"En {monster.Namn} dyker upp! {monster.Beskrivning}"
+            );
+
+            // Startar striden.
             Strid strid = new Strid(spelare, monster);
+
             bool spelarenVann = strid.Kör();
 
+            // Om spelaren vann får den XP.
             if (spelarenVann)
             {
-                Console.WriteLine($"{spelare.Namn} vann och fick {monster.XpBelöning} XP!");
-                spelare.FåXp(monster.XpBelöning);
+                Console.WriteLine(
+                    $"{spelare.Namn} vann och fick {monster.XpBelöning} XP!"
+                );
+
+                spelare.GainXP(monster.XpBelöning);
             }
         }
-
+    }
+}
